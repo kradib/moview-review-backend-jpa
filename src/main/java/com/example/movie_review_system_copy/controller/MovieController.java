@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/movie")
@@ -28,7 +29,8 @@ public class MovieController {
     @GetMapping("/{id}")
     public ResponseEntity<Movie> getMovie(@PathVariable final int id) {
         log.info("Received a request for a movie with id {}", id);
-        return ResponseEntity.ok(movieService.getAMovie(id));
+        Optional<Movie> movieOptional = movieService.getAMovie(id);
+        return movieOptional.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.ok(null));
     }
 
     @PostMapping

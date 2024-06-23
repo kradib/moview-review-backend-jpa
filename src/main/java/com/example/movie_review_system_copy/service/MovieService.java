@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -18,16 +19,21 @@ public class MovieService implements IMovieService{
 
     @Override
     public List<Movie> getMovies() {
-        return movieRepository.getMovies();
+        return (List<Movie>) movieRepository.findAll();
     }
 
     @Override
-    public Movie getAMovie(int id) {
-        return movieRepository.getAMovie(id);
+    public Optional<Movie> getAMovie(int id) {
+        return movieRepository.findById(id);
     }
 
     @Override
     public Movie createMovie(CreateMovieRequest createMovieRequest) {
-        return movieRepository.createMovie(createMovieRequest);
+        final Movie movie = Movie.builder()
+                .title(createMovieRequest.getTitle())
+                .trailerLink(createMovieRequest.getTrailerLink())
+                .poster(createMovieRequest.getPosterLink())
+                .build();
+        return movieRepository.save(movie);
     }
 }
